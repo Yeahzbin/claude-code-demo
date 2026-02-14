@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/editor/editor.tsx","./src/components/notelist/notelist.tsx","./src/components/sidebar/sidebar.tsx","./src/hooks/usenotes.ts","./src/types/index.ts","./src/utils/exportexcel.ts","./src/utils/exportpdf.ts","./src/utils/storage.ts"],"version":"5.9.3"}
