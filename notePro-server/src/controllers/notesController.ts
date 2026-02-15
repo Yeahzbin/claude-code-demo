@@ -92,8 +92,8 @@ export const updateNote = async (req: AuthRequest, res: Response): Promise<void>
     // Update fields
     if (title !== undefined) note.title = title;
     if (content !== undefined) note.content = content;
-    if (folder !== undefined) note.folder = folder || null;
-    if (tags !== undefined) note.tags = tags;
+    if (folder !== undefined) note.folder = folder as any;
+    if (tags !== undefined) note.tags = tags as any;
     if (isPinned !== undefined) note.isPinned = isPinned;
     if (isArchived !== undefined) note.isArchived = isArchived;
 

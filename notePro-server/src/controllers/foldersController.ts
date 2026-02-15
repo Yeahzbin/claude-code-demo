@@ -79,9 +79,9 @@ export const updateFolder = async (req: AuthRequest, res: Response): Promise<voi
         errorResponse(res, 'Cannot set folder as its own parent', 400);
         return;
       }
-      folder.parentFolder = parentFolder;
+      folder.parentFolder = parentFolder as any;
     } else if (parentFolder === null) {
-      folder.parentFolder = null;
+      folder.parentFolder = null as any;
     }
 
     if (name !== undefined) folder.name = name;
