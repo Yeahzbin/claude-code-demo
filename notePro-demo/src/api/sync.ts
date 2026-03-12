@@ -1,4 +1,4 @@
-import api, { ApiResponse, PaginationParams } from './index';
+import { apiGet, apiPost, ApiResponse, PaginationParams } from './index';
 
 // 同步变更记录
 export interface SyncChange {
@@ -69,21 +69,21 @@ export const syncApi = {
    * 获取变更列表（增量同步）
    */
   getChanges: (params: GetChangesParams): Promise<ApiResponse<ChangesResponse>> => {
-    return api.get('/sync/changes', { params });
+    return apiGet('/sync/changes', { params });
   },
 
   /**
    * 推送本地变更
    */
   pushChanges: (params: PushChangesParams): Promise<ApiResponse<ChangesResponse>> => {
-    return api.post('/sync/push', params);
+    return apiPost('/sync/push', params);
   },
 
   /**
    * 获取同步状态
    */
   getSyncStatus: (): Promise<ApiResponse<SyncStatus>> => {
-    return api.get('/sync/status');
+    return apiGet('/sync/status');
   },
 
   /**
@@ -95,7 +95,7 @@ export const syncApi = {
     notebooks: any[];
     tags: any[];
   }>> => {
-    return api.post('/sync/full');
+    return apiPost('/sync/full');
   },
 
   /**
@@ -106,7 +106,7 @@ export const syncApi = {
     entityId: string,
     resolution: 'local' | 'remote' | 'keepBoth'
   ): Promise<ApiResponse<null>> => {
-    return api.post('/sync/conflict/resolve', {
+    return apiPost('/sync/conflict/resolve', {
       entityType,
       entityId,
       resolution,
@@ -125,7 +125,7 @@ export const syncApi = {
       createdAt: string;
     }>;
   }>> => {
-    return api.get('/sync/conflicts');
+    return apiGet('/sync/conflicts');
   },
 };
 

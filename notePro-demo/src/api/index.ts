@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { message } from 'antd';
 
 // API 基础 URL - 可通过环境变量配置
@@ -174,6 +174,24 @@ export interface ApiError {
     requestId?: string;
   };
 }
+
+// 类型安全的 API 请求方法
+// 返回 ApiResponse<T> 而不是 AxiosResponse<ApiResponse<T>>
+export const apiGet = <T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
+  return api.get(url, config).then((response: AxiosResponse<ApiResponse<T>>) => response.data);
+};
+
+export const apiPost = <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
+  return api.post(url, data, config).then((response: AxiosResponse<ApiResponse<T>>) => response.data);
+};
+
+export const apiPut = <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
+  return api.put(url, data, config).then((response: AxiosResponse<ApiResponse<T>>) => response.data);
+};
+
+export const apiDelete = <T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
+  return api.delete(url, config).then((response: AxiosResponse<ApiResponse<T>>) => response.data);
+};
 
 // 分页参数类型
 export interface PaginationParams {

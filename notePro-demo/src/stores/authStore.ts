@@ -46,7 +46,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         try {
           const response = await authApi.login(params);
-          const { user, accessToken, refreshToken } = response.data.data;
+          const { user, accessToken, refreshToken } = response.data;
 
           // 存储 Token
           tokenStorage.setAccessToken(accessToken);
@@ -65,7 +65,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         try {
           const response = await authApi.register(params);
-          const { user, accessToken, refreshToken } = response.data.data;
+          const { user, accessToken, refreshToken } = response.data;
 
           // 存储 Token
           tokenStorage.setAccessToken(accessToken);
@@ -104,7 +104,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true });
         try {
           const response = await authApi.getCurrentUser();
-          set({ user: response.data.data, isAuthenticated: true, isLoading: false });
+          set({ user: response.data, isAuthenticated: true, isLoading: false });
         } catch (error) {
           // Token 失效，清除登录状态
           tokenStorage.clearAllTokens();

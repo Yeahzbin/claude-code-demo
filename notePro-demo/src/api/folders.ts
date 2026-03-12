@@ -1,4 +1,4 @@
-import api, { ApiResponse, PaginationParams, SortParams } from './index';
+import { apiGet, apiPost, apiPut, apiDelete, ApiResponse, PaginationParams } from './index';
 
 // 文件夹类型定义（与 PRD 文档一致）
 export interface Folder {
@@ -60,56 +60,56 @@ export const foldersApi = {
    * 获取文件夹树
    */
   getFoldersTree: (params?: { notebookId?: string }): Promise<ApiResponse<FoldersTreeResponse>> => {
-    return api.get('/folders', { params: { ...params, tree: true } });
+    return apiGet('/folders', { params: { ...params, tree: true } });
   },
 
   /**
    * 获取文件夹列表（扁平结构）
    */
   getFolders: (params?: FolderQueryParams): Promise<ApiResponse<{ folders: Folder[] }>> => {
-    return api.get('/folders', { params });
+    return apiGet('/folders', { params });
   },
 
   /**
    * 获取文件夹详情
    */
   getFolder: (id: string): Promise<ApiResponse<Folder>> => {
-    return api.get(`/folders/${id}`);
+    return apiGet(`/folders/${id}`);
   },
 
   /**
    * 创建文件夹
    */
   createFolder: (params: CreateFolderParams): Promise<ApiResponse<Folder>> => {
-    return api.post('/folders', params);
+    return apiPost('/folders', params);
   },
 
   /**
    * 更新文件夹
    */
   updateFolder: (id: string, params: UpdateFolderParams): Promise<ApiResponse<Folder>> => {
-    return api.put(`/folders/${id}`, params);
+    return apiPut(`/folders/${id}`, params);
   },
 
   /**
    * 删除文件夹
    */
   deleteFolder: (id: string): Promise<ApiResponse<null>> => {
-    return api.delete(`/folders/${id}`);
+    return apiDelete(`/folders/${id}`);
   },
 
   /**
    * 批量排序文件夹
    */
   reorderFolders: (params: ReorderFoldersParams): Promise<ApiResponse<null>> => {
-    return api.put('/folders/reorder', params);
+    return apiPut('/folders/reorder', params);
   },
 
   /**
    * 移动文件夹
    */
   moveFolder: (id: string, newParentId: string | null): Promise<ApiResponse<Folder>> => {
-    return api.put(`/folders/${id}/move`, { parentId: newParentId });
+    return apiPut(`/folders/${id}/move`, { parentId: newParentId });
   },
 };
 

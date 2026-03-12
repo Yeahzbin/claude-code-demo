@@ -1,4 +1,4 @@
-import api, { ApiResponse, PaginationParams, SortParams } from './index';
+import { apiGet, apiPost, apiPut, apiDelete, ApiResponse, PaginationParams, SortParams } from './index';
 
 // 笔记类型定义（与 PRD 文档一致）
 export interface Note {
@@ -94,91 +94,91 @@ export const notesApi = {
    * 获取笔记列表
    */
   getNotes: (params?: NoteQueryParams): Promise<ApiResponse<NotesListResponse>> => {
-    return api.get('/notes', { params });
+    return apiGet('/notes', { params });
   },
 
   /**
    * 获取笔记详情
    */
   getNote: (id: string): Promise<ApiResponse<Note>> => {
-    return api.get(`/notes/${id}`);
+    return apiGet(`/notes/${id}`);
   },
 
   /**
    * 创建笔记
    */
   createNote: (params: CreateNoteParams): Promise<ApiResponse<Note>> => {
-    return api.post('/notes', params);
+    return apiPost('/notes', params);
   },
 
   /**
    * 更新笔记
    */
   updateNote: (id: string, params: UpdateNoteParams): Promise<ApiResponse<Note>> => {
-    return api.put(`/notes/${id}`, params);
+    return apiPut(`/notes/${id}`, params);
   },
 
   /**
    * 删除笔记（软删除）
    */
   deleteNote: (id: string): Promise<ApiResponse<null>> => {
-    return api.delete(`/notes/${id}`);
+    return apiDelete(`/notes/${id}`);
   },
 
   /**
    * 恢复笔记
    */
   restoreNote: (id: string): Promise<ApiResponse<Note>> => {
-    return api.post(`/notes/${id}/restore`);
+    return apiPost(`/notes/${id}/restore`);
   },
 
   /**
    * 永久删除笔记
    */
   permanentDeleteNote: (id: string): Promise<ApiResponse<null>> => {
-    return api.delete(`/notes/${id}/permanent`);
+    return apiDelete(`/notes/${id}/permanent`);
   },
 
   /**
    * 获取笔记版本历史
    */
   getNoteVersions: (id: string, params?: PaginationParams): Promise<ApiResponse<{ versions: NoteVersion[] }>> => {
-    return api.get(`/notes/${id}/versions`, { params });
+    return apiGet(`/notes/${id}/versions`, { params });
   },
 
   /**
    * 恢复笔记版本
    */
   restoreNoteVersion: (noteId: string, versionId: string): Promise<ApiResponse<Note>> => {
-    return api.post(`/notes/${noteId}/versions/${versionId}/restore`);
+    return apiPost(`/notes/${noteId}/versions/${versionId}/restore`);
   },
 
   /**
    * 搜索笔记
    */
   searchNotes: (params: SearchNotesParams): Promise<ApiResponse<NotesListResponse>> => {
-    return api.get('/notes/search', { params });
+    return apiGet('/notes/search', { params });
   },
 
   /**
    * 批量移动笔记到文件夹
    */
   moveNotesToFolder: (noteIds: string[], folderId: string): Promise<ApiResponse<null>> => {
-    return api.put('/notes/batch/move', { noteIds, folderId });
+    return apiPut('/notes/batch/move', { noteIds, folderId });
   },
 
   /**
    * 批量删除笔记
    */
   batchDeleteNotes: (noteIds: string[]): Promise<ApiResponse<null>> => {
-    return api.delete('/notes/batch', { data: { noteIds } });
+    return apiDelete('/notes/batch', { data: { noteIds } });
   },
 
   /**
    * 批量添加标签
    */
   batchAddTags: (noteIds: string[], tagIds: string[]): Promise<ApiResponse<null>> => {
-    return api.put('/notes/batch/tags', { noteIds, tagIds });
+    return apiPut('/notes/batch/tags', { noteIds, tagIds });
   },
 };
 

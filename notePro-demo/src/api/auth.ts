@@ -1,4 +1,4 @@
-import api, { ApiResponse } from './index';
+import { apiGet, apiPost, apiPut, ApiResponse } from './index';
 
 // 用户类型定义
 export interface User {
@@ -77,70 +77,70 @@ export const authApi = {
    * 用户注册
    */
   register: (params: RegisterParams): Promise<ApiResponse<AuthResponse>> => {
-    return api.post('/auth/register', params);
+    return apiPost('/auth/register', params);
   },
 
   /**
    * 用户登录
    */
   login: (params: LoginParams): Promise<ApiResponse<AuthResponse>> => {
-    return api.post('/auth/login', params);
+    return apiPost('/auth/login', params);
   },
 
   /**
    * 用户登出
    */
   logout: (): Promise<ApiResponse<null>> => {
-    return api.post('/auth/logout');
+    return apiPost('/auth/logout');
   },
 
   /**
    * 刷新 Token
    */
   refreshToken: (refreshToken: string): Promise<ApiResponse<RefreshTokenResponse>> => {
-    return api.post('/auth/refresh', { refreshToken });
+    return apiPost('/auth/refresh', { refreshToken });
   },
 
   /**
    * 忘记密码
    */
   forgotPassword: (params: ForgotPasswordParams): Promise<ApiResponse<null>> => {
-    return api.post('/auth/forgot-password', params);
+    return apiPost('/auth/forgot-password', params);
   },
 
   /**
    * 重置密码
    */
   resetPassword: (params: ResetPasswordParams): Promise<ApiResponse<null>> => {
-    return api.post('/auth/reset-password', params);
+    return apiPost('/auth/reset-password', params);
   },
 
   /**
    * 获取当前用户信息
    */
   getCurrentUser: (): Promise<ApiResponse<User>> => {
-    return api.get('/auth/me');
+    return apiGet('/auth/me');
   },
 
   /**
    * 更新用户信息
    */
   updateProfile: (data: Partial<User>): Promise<ApiResponse<User>> => {
-    return api.put('/auth/me', data);
+    return apiPut('/auth/me', data);
   },
 
   /**
    * 更新用户设置
    */
   updateSettings: (settings: Partial<UserSettings>): Promise<ApiResponse<UserSettings>> => {
-    return api.put('/auth/me/settings', settings);
+    return apiPut('/auth/me/settings', settings);
   },
 
   /**
    * 修改密码
    */
   changePassword: (oldPassword: string, newPassword: string): Promise<ApiResponse<null>> => {
-    return api.post('/auth/change-password', { oldPassword, newPassword });
+    return apiPost('/auth/change-password', { oldPassword, newPassword });
   },
 };
 

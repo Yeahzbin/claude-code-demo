@@ -1,4 +1,4 @@
-import api, { ApiResponse, PaginationParams } from './index';
+import { apiGet, apiPost, apiPut, apiDelete, ApiResponse, PaginationParams } from './index';
 
 // 标签类型定义（与 PRD 文档一致）
 export interface Tag {
@@ -39,49 +39,49 @@ export const tagsApi = {
    * 获取标签列表
    */
   getTags: (params?: TagQueryParams): Promise<ApiResponse<TagsListResponse>> => {
-    return api.get('/tags', { params });
+    return apiGet('/tags', { params });
   },
 
   /**
    * 获取标签详情
    */
   getTag: (id: string): Promise<ApiResponse<Tag>> => {
-    return api.get(`/tags/${id}`);
+    return apiGet(`/tags/${id}`);
   },
 
   /**
    * 创建标签
    */
   createTag: (params: CreateTagParams): Promise<ApiResponse<Tag>> => {
-    return api.post('/tags', params);
+    return apiPost('/tags', params);
   },
 
   /**
    * 更新标签
    */
   updateTag: (id: string, params: UpdateTagParams): Promise<ApiResponse<Tag>> => {
-    return api.put(`/tags/${id}`, params);
+    return apiPut(`/tags/${id}`, params);
   },
 
   /**
    * 删除标签
    */
   deleteTag: (id: string): Promise<ApiResponse<null>> => {
-    return api.delete(`/tags/${id}`);
+    return apiDelete(`/tags/${id}`);
   },
 
   /**
    * 批量删除标签
    */
   batchDeleteTags: (tagIds: string[]): Promise<ApiResponse<null>> => {
-    return api.delete('/tags/batch', { data: { tagIds } });
+    return apiDelete('/tags/batch', { data: { tagIds } });
   },
 
   /**
    * 合并标签
    */
   mergeTags: (sourceTagId: string, targetTagId: string): Promise<ApiResponse<null>> => {
-    return api.post('/tags/merge', { sourceTagId, targetTagId });
+    return apiPost('/tags/merge', { sourceTagId, targetTagId });
   },
 };
 

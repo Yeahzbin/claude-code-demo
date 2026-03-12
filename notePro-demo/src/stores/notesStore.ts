@@ -95,7 +95,7 @@ export const useNotesStore = create<NotesState>()(
         set({ isLoadingNotes: true, notesError: null });
         try {
           const response = await notesApi.getNotes(params);
-          set({ notes: response.data.data.notes, isLoadingNotes: false });
+          set({ notes: response.data.notes, isLoadingNotes: false });
         } catch (error: any) {
           const errorMessage = error.response?.data?.error?.message || '获取笔记列表失败';
           set({ notesError: errorMessage, isLoadingNotes: false });
@@ -106,7 +106,7 @@ export const useNotesStore = create<NotesState>()(
       fetchNote: async (id: string) => {
         try {
           const response = await notesApi.getNote(id);
-          const note = response.data.data;
+          const note = response.data;
 
           // 更新本地笔记列表
           const { notes } = get();
@@ -130,7 +130,7 @@ export const useNotesStore = create<NotesState>()(
         set({ isLoadingNotes: true, notesError: null });
         try {
           const response = await notesApi.createNote(params);
-          const newNote = response.data.data;
+          const newNote = response.data;
           set({ notes: [newNote, ...get().notes], isLoadingNotes: false });
           return newNote;
         } catch (error: any) {
@@ -145,7 +145,7 @@ export const useNotesStore = create<NotesState>()(
         set({ notesError: null });
         try {
           const response = await notesApi.updateNote(id, params);
-          const updatedNote = response.data.data;
+          const updatedNote = response.data;
 
           // 更新本地笔记列表
           const { notes } = get();
@@ -188,7 +188,7 @@ export const useNotesStore = create<NotesState>()(
         set({ notesError: null });
         try {
           const response = await notesApi.restoreNote(id);
-          const restoredNote = response.data.data;
+          const restoredNote = response.data;
 
           const { notes } = get();
           const updatedNotes = notes.map((note) =>
@@ -232,7 +232,7 @@ export const useNotesStore = create<NotesState>()(
         set({ isLoadingFolders: true, foldersError: null });
         try {
           const response = await foldersApi.getFolders();
-          set({ folders: response.data.data.folders, isLoadingFolders: false });
+          set({ folders: response.data.folders, isLoadingFolders: false });
         } catch (error: any) {
           const errorMessage = error.response?.data?.error?.message || '获取文件夹列表失败';
           set({ foldersError: errorMessage, isLoadingFolders: false });
@@ -244,7 +244,7 @@ export const useNotesStore = create<NotesState>()(
         set({ isLoadingFolders: true, foldersError: null });
         try {
           const response = await foldersApi.createFolder(params);
-          const newFolder = response.data.data;
+          const newFolder = response.data;
           set({ folders: [...get().folders, newFolder], isLoadingFolders: false });
           return newFolder;
         } catch (error: any) {
@@ -259,7 +259,7 @@ export const useNotesStore = create<NotesState>()(
         set({ foldersError: null });
         try {
           const response = await foldersApi.updateFolder(id, params);
-          const updatedFolder = response.data.data;
+          const updatedFolder = response.data;
 
           const { folders } = get();
           const updatedFolders = folders.map((folder) =>
@@ -306,7 +306,7 @@ export const useNotesStore = create<NotesState>()(
         set({ isLoadingTags: true, tagsError: null });
         try {
           const response = await tagsApi.getTags();
-          set({ tags: response.data.data.tags, isLoadingTags: false });
+          set({ tags: response.data.tags, isLoadingTags: false });
         } catch (error: any) {
           const errorMessage = error.response?.data?.error?.message || '获取标签列表失败';
           set({ tagsError: errorMessage, isLoadingTags: false });
@@ -318,7 +318,7 @@ export const useNotesStore = create<NotesState>()(
         set({ tagsError: null });
         try {
           const response = await tagsApi.createTag(params);
-          const newTag = response.data.data;
+          const newTag = response.data;
           set({ tags: [...get().tags, newTag] });
           return newTag;
         } catch (error: any) {
@@ -333,7 +333,7 @@ export const useNotesStore = create<NotesState>()(
         set({ tagsError: null });
         try {
           const response = await tagsApi.updateTag(id, params);
-          const updatedTag = response.data.data;
+          const updatedTag = response.data;
 
           const { tags } = get();
           const updatedTags = tags.map((tag) =>
@@ -376,7 +376,7 @@ export const useNotesStore = create<NotesState>()(
         set({ searchQuery: query, isSearching: true });
         try {
           const response = await notesApi.searchNotes({ query, page: 1, pageSize: 50 });
-          set({ searchResults: response.data.data.notes, isSearching: false });
+          set({ searchResults: response.data.notes, isSearching: false });
         } catch (error: any) {
           const errorMessage = error.response?.data?.error?.message || '搜索失败';
           set({ isSearching: false });
