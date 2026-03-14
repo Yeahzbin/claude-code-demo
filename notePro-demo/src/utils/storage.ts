@@ -9,13 +9,23 @@ const ACCESS_TOKEN_KEY = 'notepro_access_token';
 const REFRESH_TOKEN_KEY = 'notepro_refresh_token';
 const USER_KEY = 'notepro_user';
 
+// Safe JSON parse with error handling
+const safeJsonParse = <T>(data: string | null, defaultValue: T): T => {
+  if (!data) return defaultValue;
+  try {
+    return JSON.parse(data) as T;
+  } catch (error) {
+    console.error('JSON parse error:', error);
+    return defaultValue;
+  }
+};
+
 export const storage = {
   // ========== 原有功能 ==========
 
   // Notes
   getNotes: (): Note[] => {
-    const data = localStorage.getItem(NOTES_KEY);
-    return data ? JSON.parse(data) : [];
+    return safeJsonParse<Note[]>(localStorage.getItem(NOTES_KEY), []);
   },
 
   saveNotes: (notes: Note[]): void => {
@@ -25,18 +35,20 @@ export const storage = {
   // Folders
   getFolders: (): Folder[] => {
     const data = localStorage.getItem(FOLDERS_KEY);
-    if (data) {
-      return JSON.parse(data);
+    const folders = safeJsonParse<Folder[]>(data, []);
+    
+    if (folders.length === 0) {
+      // Default folder
+      const defaultFolder: Folder = {
+        id: 'default',
+        name: '我的笔记',
+        parentId: null,
+        color: '#1890ff',
+        createdAt: new Date().toISOString(),
+      };
+      return [defaultFolder];
     }
-    // Default folder
-    const defaultFolder: Folder = {
-      id: 'default',
-      name: '我的笔记',
-      parentId: null,
-      color: '#1890ff',
-      createdAt: new Date().toISOString(),
-    };
-    return [defaultFolder];
+    return folders;
   },
 
   saveFolders: (folders: Folder[]): void => {
@@ -91,8 +103,7 @@ export const storage = {
 
   // 用户信息存储
   getUser: (): any => {
-    const data = localStorage.getItem(USER_KEY);
-    return data ? JSON.parse(data) : null;
+    return safeJsonParse<any>(localStorage.getItem(USER_KEY), null);
   },
 
   setUser: (user: any): void => {

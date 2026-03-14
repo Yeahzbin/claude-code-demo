@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Button, Modal, message } from 'antd';
-import { FolderOutlined, FolderOpenOutlined, PlusOutlined, EditOutlined, DeleteOutlined, InboxOutlined } from '@ant-design/icons';
+import { FolderOutlined, PlusOutlined, EditOutlined, DeleteOutlined, InboxOutlined } from '@ant-design/icons';
 import type { Folder } from '../../types';
 
 interface SidebarProps {
@@ -50,47 +50,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setEditingFolder(folder);
     setFolderName(folder.name);
     setIsModalOpen(true);
-  };
-
-  // Convert folders to tree data
-  const buildTreeData = (parentId: string | null = null): any[] => {
-    return folders
-      .filter(f => f.parentId === parentId)
-      .map(f => ({
-        key: f.id,
-        title: (
-          <div className="folder-item">
-            <span className="folder-name">{f.name}</span>
-            <div className="folder-actions">
-              <Button
-                type="text"
-                size="small"
-                icon={<EditOutlined />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openEditModal(f);
-                }}
-              />
-              {f.id !== 'default' && (
-                <Button
-                  type="text"
-                  size="small"
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDeleteFolder(f.id);
-                    message.success('文件夹已删除');
-                  }}
-                />
-              )}
-            </div>
-          </div>
-        ),
-        icon: ({ selected }: { selected: boolean }) =>
-          selected ? <FolderOpenOutlined style={{ color: f.color }} /> : <FolderOutlined />,
-        children: buildTreeData(f.id),
-      }));
   };
 
   return (

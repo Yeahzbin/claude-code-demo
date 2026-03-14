@@ -2,6 +2,18 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import type { Note } from '../types';
 
+// HTML escape function to prevent XSS
+const escapeHtml = (text: string): string => {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  };
+  return text.replace(/[&<>"']/g, char => map[char]);
+};
+
 // Create a hidden container for rendering
 let hiddenContainer: HTMLDivElement | null = null;
 
@@ -23,15 +35,15 @@ const getHiddenContainer = (): HTMLDivElement => {
 export const exportToPDF = async (note: Note): Promise<void> => {
   const container = getHiddenContainer();
 
-  // Build HTML content with Chinese font support
+  // Build HTML content with Chinese font support (escaped to prevent XSS)
   const content = `
     <div style="font-family: 'Microsoft YaHei', 'PingFang SC', 'SimHei', sans-serif;">
-      <h1 style="font-size: 24px; margin-bottom: 10px; color: #333;">${note.title || '无标题'}</h1>
+      <h1 style="font-size: 24px; margin-bottom: 10px; color: #333;">${escapeHtml(note.title || '无标题')}</h1>
       <p style="font-size: 12px; color: #666; margin-bottom: 20px;">
         创建于: ${new Date(note.createdAt).toLocaleString()}
       </p>
       <div style="font-size: 14px; line-height: 1.8; color: #333; white-space: pre-wrap;">
-        ${note.content || ''}
+        ${escapeHtml(note.content || '')}
       </div>
     </div>
   `;
@@ -76,15 +88,15 @@ export const exportToPDF = async (note: Note): Promise<void> => {
 export const exportNotesToPDF = async (notes: Note[]): Promise<void> => {
   const container = getHiddenContainer();
 
-  // Build HTML for all notes
+  // Build HTML for all notes (escaped to prevent XSS)
   const notesHtml = notes.map((note, index) => `
     <div style="margin-bottom: 30px; page-break-inside: avoid;">
-      <h2 style="font-size: 18px; margin-bottom: 8px; color: #333;">${index + 1}. ${note.title || '无标题'}</h2>
+      <h2 style="font-size: 18px; margin-bottom: 8px; color: #333;">${index + 1}. ${escapeHtml(note.title || '无标题')}</h2>
       <p style="font-size: 11px; color: #666; margin-bottom: 10px;">
         更新于: ${new Date(note.updatedAt).toLocaleString()}
       </p>
       <div style="font-size: 13px; line-height: 1.6; color: #333; white-space: pre-wrap;">
-        ${(note.content || '').substring(0, 500)}
+        ${escapeHtml((note.content || '').substring(0, 500))}
       </div>
     </div>
   `).join('<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">');

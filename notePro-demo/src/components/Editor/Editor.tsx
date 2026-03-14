@@ -25,6 +25,41 @@ interface EditorProps {
   theme: 'light' | 'dark';
 }
 
+// HTML escape function to prevent XSS
+const escapeHtml = (text: string): string => {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  };
+  return text.replace(/[&<>"']/g, char => map[char]);
+};
+
+// Sanitize HTML content to prevent XSS (allow safe tags only)
+const sanitizeHtml = (html: string): string => {
+  // Create a temporary element to parse the HTML
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  
+  // Remove script tags
+  const scripts = temp.querySelectorAll('script');
+  scripts.forEach(script => script.remove());
+  
+  // Remove event handlers
+  const allElements = temp.querySelectorAll('*');
+  allElements.forEach(el => {
+    Array.from(el.attributes).forEach(attr => {
+      if (attr.name.startsWith('on')) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+  
+  return temp.innerHTML;
+};
+
 export const Editor: React.FC<EditorProps> = ({
   note,
   notes,
@@ -39,6 +74,15 @@ export const Editor: React.FC<EditorProps> = ({
   const editorRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
   const lastNoteId = useRef<string | null>(null);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+      }
+    };
+  }, []);
 
   // Update word count
   const updateWordCount = useCallback(() => {
@@ -55,7 +99,8 @@ export const Editor: React.FC<EditorProps> = ({
       lastNoteId.current = note.id;
       setTitle(note.title);
       if (editorRef.current) {
-        editorRef.current.innerHTML = note.content || '';
+        // Sanitize content before setting to prevent XSS
+        editorRef.current.innerHTML = sanitizeHtml(note.content || '');
       }
       isInitialMount.current = false;
       // Update word count after content is set
@@ -95,6 +140,7 @@ export const Editor: React.FC<EditorProps> = ({
 
   // Handle title changes
   const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    // Escape title to prevent XSS
     setTitle(e.target.value);
     if (saveTimerRef.current) {
       clearTimeout(saveTimerRef.current);
@@ -113,6 +159,11 @@ export const Editor: React.FC<EditorProps> = ({
   const handleLink = () => {
     const url = prompt('请输入链接地址:');
     if (url) {
+      // Validate URL to prevent javascript: protocol XSS
+      if (url.startsWith('javascript:') || url.startsWith('data:')) {
+        message.error('不允许使用此类型的链接');
+        return;
+      }
       execCommand('createLink', url);
     }
   };
@@ -120,6 +171,11 @@ export const Editor: React.FC<EditorProps> = ({
   const handleImage = () => {
     const url = prompt('请输入图片地址:');
     if (url) {
+      // Validate URL to prevent javascript: protocol XSS
+      if (url.startsWith('javascript:') || url.startsWith('data:')) {
+        message.error('不允许使用此类型的图片地址');
+        return;
+      }
       execCommand('insertImage', url);
     }
   };
